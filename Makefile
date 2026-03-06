@@ -52,3 +52,7 @@ install: build
 .PHONY: fmt
 fmt:
 	goimports -local $(MODULE) -w $(shell go list -f '{{range .GoFiles}}{{$$.Dir}}/{{.}} {{end}}{{range .TestGoFiles}}{{$$.Dir}}/{{.}} {{end}}' ./...)
+
+.PHONY: lint
+lint:
+	golangci-lint run
