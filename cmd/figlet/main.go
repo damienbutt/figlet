@@ -8,7 +8,7 @@ import (
 
 	"github.com/urfave/cli/v3"
 
-	figlet "github.com/damienbutt/figlet"
+	"github.com/damienbutt/figlet"
 	"github.com/damienbutt/figlet/internal/version"
 )
 

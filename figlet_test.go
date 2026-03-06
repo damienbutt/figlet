@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	figlet "github.com/damienbutt/figlet"
+	"github.com/damienbutt/figlet"
 )
 
 // readExpected reads a golden file from testdata/expected/ and strips any trailing newline.

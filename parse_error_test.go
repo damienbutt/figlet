@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	figlet "github.com/damienbutt/figlet"
+	"github.com/damienbutt/figlet"
 )
 
 // minimalFontData returns a syntactically valid .flf data string with the
