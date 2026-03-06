@@ -14,5 +14,7 @@
         "editor.codeActionsOnSave": {
             "source.organizeImports": "explicit"
         }
-    }
+    },
+    "go.lintTool": "golangci-lint",
+    "go.lintOnSave": "workspace"
 }
