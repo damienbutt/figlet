@@ -1,0 +1,50 @@
+TARGET := figlet
+BIN_DIR := bin
+
+ifeq ($(OS),Windows_NT)
+	TARGET := $(TARGET).exe
+endif
+
+MODULE := github.com/damienbutt/figlet
+
+# Get GOBIN, fallback to GOPATH/bin, then HOME/go/bin
+GOBIN ?= $(shell go env GOBIN)
+ifeq ($(GOBIN),)
+GOBIN := $(shell go env GOPATH)/bin
+endif
+ifeq ($(GOBIN),)
+GOBIN := $(HOME)/go/bin
+endif
+
+# Version info
+VERSION    ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
+GIT_COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+BUILD_DATE ?= $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+VERSION_PKG := $(MODULE)/internal/version
+
+# Compiler Flags
+GOFLAGS := -ldflags="-s -w -extldflags=-static \
+    -X '$(VERSION_PKG).Version=$(VERSION)' \
+    -X '$(VERSION_PKG).GitCommit=$(GIT_COMMIT)' \
+    -X '$(VERSION_PKG).BuildDate=$(BUILD_DATE)'" \
+    -trimpath
+
+.PHONY: build
+build:
+	CGO_ENABLED=0 go build $(GOFLAGS) -o $(BIN_DIR)/$(TARGET) ./cmd/figlet
+
+.PHONY: test
+test:
+	go test -v ./...
+
+.PHONY: clean
+clean:
+	rm -rf $(BIN_DIR)
+
+.PHONY: run
+run: build
+	./$(BIN_DIR)/$(TARGET)
+
+install: build
+	cp $(BIN_DIR)/$(TARGET) $(GOBIN)/$(TARGET)
