@@ -81,9 +81,9 @@ func NewFigletFont() *FigletFont {
 
 type InternalOptions struct {
 	FontMetadata
-	width           int
-	whitespaceBreak bool
-	showHardBlanks  bool
+	Width           int
+	WhitespaceBreak bool
+	ShowHardBlanks  bool
 }
 
 type FigCharWithOverlap struct {
