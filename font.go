@@ -1,5 +1,6 @@
 package figlet
 
+// PrintDirection controls the direction in which FIGlet characters are rendered.
 type PrintDirection int
 
 const (
@@ -8,6 +9,8 @@ const (
 	RightToLeft                                //  1: right to left
 )
 
+// FittingRules holds the horizontal and vertical layout mode and the
+// individual smushing rule flags decoded from a font's header.
 type FittingRules struct {
 	HLayout int
 	HRule1  bool
@@ -24,6 +27,7 @@ type FittingRules struct {
 	VRule5  bool
 }
 
+// FontMetadata contains the parsed header fields of a FIGlet font file (.flf).
 type FontMetadata struct {
 	Baseline        int
 	CodeTagCount    *int
@@ -37,13 +41,16 @@ type FontMetadata struct {
 	PrintDirection  PrintDirection
 }
 
+// FontName is a string alias for a FIGlet font name.
+// KerningMethods is a string alias for a horizontal kerning/smushing mode.
+// FittingProperties is a string alias for a field name within FittingRules.
 type (
 	FontName          string
 	KerningMethods    string
 	FittingProperties string
 )
 
-// KerningMethods constants mirror the TypeScript KerningMethods union type.
+// KerningMethods constants define the supported horizontal kerning/smushing modes.
 const (
 	KerningDefault            KerningMethods = "default"
 	KerningFull               KerningMethods = "full"
@@ -52,8 +59,7 @@ const (
 	KerningUniversalSmushing  KerningMethods = "universal smushing"
 )
 
-// FittingProperties constants name the individual fields of FittingRules,
-// matching the TypeScript FittingProperties union type.
+// FittingProperties constants name the individual fields of FittingRules.
 const (
 	FitHLayout FittingProperties = "hLayout"
 	FitHRule1  FittingProperties = "hRule1"
@@ -70,6 +76,8 @@ const (
 	FitVRule5  FittingProperties = "vRule5"
 )
 
+// FigletOptions controls how a piece of text is rendered by Text.
+// All fields are optional; zero values fall back to font/package defaults.
 type FigletOptions struct {
 	Font             FontName
 	HorizontalLayout KerningMethods
@@ -80,12 +88,15 @@ type FigletOptions struct {
 	ShowHardBlanks   bool
 }
 
+// FigletDefaults holds the package-level defaults used when no FigletOptions
+// are provided to Text. Modify via Defaults().
 type FigletDefaults struct {
 	Font               FontName
 	FontPath           string
 	FetchFontIfMissing bool
 }
 
+// FigletFont is the internal representation of a parsed .flf font file.
 type FigletFont struct {
 	options  *FontMetadata
 	comment  string
@@ -93,6 +104,7 @@ type FigletFont struct {
 	charCode map[int][]string
 }
 
+// NewFigletFont returns an empty FigletFont ready to be populated by ParseFont.
 func NewFigletFont() *FigletFont {
 	return &FigletFont{
 		options:  &FontMetadata{},

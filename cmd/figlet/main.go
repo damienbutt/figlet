@@ -54,68 +54,70 @@ func main() {
 				Usage:   "show font information",
 			},
 		},
-		Action: func(ctx context.Context, cmd *cli.Command) error {
-			// Handle --list
-			if cmd.Bool("list") {
-				fonts, err := figlet.Fonts()
-				if err != nil {
-					return err
-				}
-
-				fmt.Println("Available fonts:")
-				for _, f := range fonts {
-					fmt.Printf("  %s\n", f)
-				}
-
-				return nil
-			}
-
-			// Handle --info <font>
-			if fontName := cmd.String("info"); fontName != "" {
-				meta, err := figlet.LoadFont(fontName)
-				if err != nil {
-					fmt.Fprintf(os.Stderr, "Error loading font '%s': %v\n", fontName, err)
-					os.Exit(1)
-				}
-
-				fmt.Printf("Font: %s\n", fontName)
-				out, _ := json.MarshalIndent(meta, "", "  ")
-				fmt.Printf("Options: %s\n", out)
-
-				return nil
-			}
-
-			// Require text argument
-			if cmd.NArg() == 0 {
-				return cli.ShowAppHelp(cmd)
-			}
-
-			text := cmd.Args().First()
-			font := cmd.String("font")
-			width := cmd.Int("width")
-			horizontalLayout := cmd.String("horizontalLayout")
-			verticalLayout := cmd.String("verticalLayout")
-
-			opts := &figlet.FigletOptions{
-				Font:             figlet.FontName(font),
-				HorizontalLayout: figlet.KerningMethods(horizontalLayout),
-				VerticalLayout:   figlet.KerningMethods(verticalLayout),
-				Width:            width,
-			}
-
-			result, err := figlet.Text(text, opts)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Font '%s' not found. Use --list to see available fonts.\n", font)
-				os.Exit(1)
-			}
-
-			fmt.Println(result)
-			return nil
-		},
+		Action: run,
 	}
 
 	if err := app.Run(context.Background(), os.Args); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
 	}
+}
+
+func run(ctx context.Context, cmd *cli.Command) error {
+	// Handle --list
+	if cmd.Bool("list") {
+		fonts, err := figlet.Fonts()
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("Available fonts:")
+		for _, f := range fonts {
+			fmt.Printf("  %s\n", f)
+		}
+
+		return nil
+	}
+
+	// Handle --info <font>
+	if fontName := cmd.String("info"); fontName != "" {
+		meta, err := figlet.LoadFont(fontName)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error loading font '%s': %v\n", fontName, err)
+			os.Exit(1)
+		}
+
+		fmt.Printf("Font: %s\n", fontName)
+		out, _ := json.MarshalIndent(meta, "", "  ")
+		fmt.Printf("Options: %s\n", out)
+
+		return nil
+	}
+
+	// Require text argument
+	if cmd.NArg() == 0 {
+		return cli.ShowAppHelp(cmd)
+	}
+
+	text := cmd.Args().First()
+	font := cmd.String("font")
+	width := cmd.Int("width")
+	horizontalLayout := cmd.String("horizontalLayout")
+	verticalLayout := cmd.String("verticalLayout")
+
+	opts := &figlet.FigletOptions{
+		Font:             figlet.FontName(font),
+		HorizontalLayout: figlet.KerningMethods(horizontalLayout),
+		VerticalLayout:   figlet.KerningMethods(verticalLayout),
+		Width:            width,
+	}
+
+	result, err := figlet.Text(text, opts)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Font '%s' not found. Use --list to see available fonts.\n", font)
+		os.Exit(1)
+	}
+
+	fmt.Println(result)
+	return nil
 }

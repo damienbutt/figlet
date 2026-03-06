@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// figDefaults holds the active package-level defaults, initialised to Standard font.
 var figDefaults = FigletDefaults{
 	Font:     "Standard",
 	FontPath: "fonts",
