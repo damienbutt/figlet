@@ -65,6 +65,15 @@ var standardMeta = figlet.FontMetadata{
 // ---------------------------------------------------------------------------
 
 func TestStandardFont(t *testing.T) {
+	t.Run("renders text with standard font and default vertical layout", func(t *testing.T) {
+		actual, err := figlet.Text("FIGlet\nFonts", &figlet.FigletOptions{
+			Font: "Standard",
+		})
+
+		require.NoError(t, err)
+		assert.Equal(t, readExpected(t, "standard_default"), actual)
+	})
+
 	t.Run("renders text with standard font and fitted vertical layout", func(t *testing.T) {
 		actual, err := figlet.Text("FIGlet\nFONTS", &figlet.FigletOptions{
 			Font:           "Standard",
@@ -125,6 +134,13 @@ func TestTextWrapping(t *testing.T) {
 			text:     "Hello From The Figlet Library",
 			opts:     figlet.FigletOptions{Font: "Standard", Width: 80},
 			expected: "wrapSimple",
+			maxWidth: 80,
+		},
+		{
+			name:     "wrap word",
+			text:     "Hello From The Figlet Library",
+			opts:     figlet.FigletOptions{Font: "Standard", Width: 80, WhitespaceBreak: true},
+			expected: "wrapWord",
 			maxWidth: 80,
 		},
 		{
