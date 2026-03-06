@@ -48,3 +48,7 @@ run: build
 
 install: build
 	cp $(BIN_DIR)/$(TARGET) $(GOBIN)/$(TARGET)
+
+.PHONY: fmt
+fmt:
+	goimports -local $(MODULE) -w $(shell go list -f '{{range .GoFiles}}{{$$.Dir}}/{{.}} {{end}}{{range .TestGoFiles}}{{$$.Dir}}/{{.}} {{end}}' ./...)
