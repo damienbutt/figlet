@@ -1,0 +1,18 @@
+{
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "files.trimTrailingWhitespace": true,
+    "files.autoSave": "onFocusChange",
+    "gopls": {
+        "ui.semanticTokens": true,
+        "formatting.local": "github.com/damienbutt/figlet"
+    },
+    "[go]": {
+        "editor.defaultFormatter": "golang.go",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
+    }
+}
