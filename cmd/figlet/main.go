@@ -8,6 +8,7 @@ import (
 
 	"github.com/urfave/cli/v3"
 
+	figlet "github.com/damienbutt/figlet"
 	"github.com/damienbutt/figlet/internal/version"
 )
 
@@ -56,7 +57,7 @@ func main() {
 		Action: func(ctx context.Context, cmd *cli.Command) error {
 			// Handle --list
 			if cmd.Bool("list") {
-				fonts, err := figletFonts()
+				fonts, err := figlet.Fonts()
 				if err != nil {
 					return err
 				}
@@ -71,7 +72,7 @@ func main() {
 
 			// Handle --info <font>
 			if fontName := cmd.String("info"); fontName != "" {
-				meta, err := figletLoadFont(fontName)
+				meta, err := figlet.LoadFont(fontName)
 				if err != nil {
 					fmt.Fprintf(os.Stderr, "Error loading font '%s': %v\n", fontName, err)
 					os.Exit(1)

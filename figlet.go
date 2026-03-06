@@ -69,7 +69,8 @@ func Fonts() ([]string, error) {
 	names := make([]string, 0, len(entries))
 	for _, e := range entries {
 		if !e.IsDir() && strings.HasSuffix(e.Name(), ".flf") {
-			names = append(names, strings.TrimSuffix(e.Name(), ".flf"))
+			disk := strings.TrimSuffix(e.Name(), ".flf")
+			names = append(names, getDisplayName(disk))
 		}
 	}
 

@@ -112,12 +112,7 @@ func generateFigTextLines(txt string, font *FigletFont, opts InternalOptions) []
 		txt = string(runes)
 	}
 
-	type figCharsWithOverlap struct {
-		chars   []FigCharWithOverlap
-		overlap int
-	}
-
-	nextFigChars := figCharsWithOverlap{}
+	nextFigChars := FigCharsWithOverlap{}
 	var figWords []FigCharWithOverlap
 
 	txtRunes := []rune(txt)
@@ -203,7 +198,7 @@ func generateFigTextLines(txt string, font *FigletFont, opts InternalOptions) []
 					if maxWidth >= opts.Width {
 						br := breakWord(nextFigChars.chars, height, opts)
 						tmpBreak = &br
-						nextFigChars = figCharsWithOverlap{chars: br.chars}
+						nextFigChars = FigCharsWithOverlap{chars: br.chars}
 						outputFigLines = append(outputFigLines, br.outputFigText)
 					} else {
 						break
@@ -232,7 +227,7 @@ func generateFigTextLines(txt string, font *FigletFont, opts InternalOptions) []
 					outputFigText = joinFigArray(figWords, height, opts)
 				}
 
-				nextFigChars = figCharsWithOverlap{overlap: overlap}
+				nextFigChars = FigCharsWithOverlap{overlap: overlap}
 				continue
 			}
 		}
@@ -301,11 +296,3 @@ func generateText(fontName string, opts InternalOptions, txt string) (string, er
 
 	return strings.Join(output, "\n"), nil
 }
-
-// max returns the larger of a and b (for Go versions without built-in max).
-// func max(a, b int) int {
-// 	if a > b {
-// 		return a
-// 	}
-// 	return b
-// }
