@@ -55,6 +55,7 @@ func PreloadFonts(names []FontName) error {
 			return err
 		}
 	}
+
 	return nil
 }
 
@@ -71,6 +72,7 @@ func Fonts() ([]string, error) {
 			names = append(names, strings.TrimSuffix(e.Name(), ".flf"))
 		}
 	}
+
 	sort.Strings(names)
 	return names, nil
 }
