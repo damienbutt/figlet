@@ -3,38 +3,38 @@ package figlet
 type PrintDirection int
 
 const (
-	LeftToRight PrintDirection = iota - 1
-	RightToLeft
-	TopToBottom
+	DefaultDirection PrintDirection = iota - 1 // -1: use font header's value
+	LeftToRight                                //  0: left to right (FIGlet default)
+	RightToLeft                                //  1: right to left
 )
 
 type FittingRules struct {
-	hLayout int
-	hRule1  bool
-	hRule2  bool
-	hRule3  bool
-	hRule4  bool
-	hRule5  bool
-	hRule6  bool
-	vLayout int
-	vRule1  bool
-	vRule2  bool
-	vRule3  bool
-	vRule4  bool
-	vRule5  bool
+	HLayout int
+	HRule1  bool
+	HRule2  bool
+	HRule3  bool
+	HRule4  bool
+	HRule5  bool
+	HRule6  bool
+	VLayout int
+	VRule1  bool
+	VRule2  bool
+	VRule3  bool
+	VRule4  bool
+	VRule5  bool
 }
 
 type FontMetadata struct {
-	baseline        int
-	codeTagCount    *int
-	fittingRules    FittingRules
-	fullLayout      *int
-	hardBlank       string
-	height          int
-	maxLength       int
-	numCommentLines int
-	oldLayout       int
-	printDirection  PrintDirection
+	Baseline        int
+	CodeTagCount    *int
+	FittingRules    FittingRules
+	FullLayout      *int
+	HardBlank       string
+	Height          int
+	MaxLength       int
+	NumCommentLines int
+	OldLayout       int
+	PrintDirection  PrintDirection
 }
 
 type (
