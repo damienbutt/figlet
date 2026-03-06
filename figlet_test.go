@@ -65,17 +65,7 @@ var standardMeta = figlet.FontMetadata{
 // ---------------------------------------------------------------------------
 
 func TestStandardFont(t *testing.T) {
-	t.Run("renders text with standard font and fitted vertical layout (sync)", func(t *testing.T) {
-		actual, err := figlet.TextSync("FIGlet\nFONTS", &figlet.FigletOptions{
-			Font:           "Standard",
-			VerticalLayout: "fitted",
-		})
-
-		require.NoError(t, err)
-		assert.Equal(t, readExpected(t, "standard"), actual)
-	})
-
-	t.Run("renders text with standard font and fitted vertical layout (async)", func(t *testing.T) {
+	t.Run("renders text with standard font and fitted vertical layout", func(t *testing.T) {
 		actual, err := figlet.Text("FIGlet\nFONTS", &figlet.FigletOptions{
 			Font:           "Standard",
 			VerticalLayout: "fitted",
@@ -92,7 +82,7 @@ func TestStandardFont(t *testing.T) {
 		_, err = figlet.ParseFont("StandardParseFontName", string(data))
 		require.NoError(t, err)
 
-		actual, err := figlet.TextSync("FIGlet\nFONTS", &figlet.FigletOptions{
+		actual, err := figlet.Text("FIGlet\nFONTS", &figlet.FigletOptions{
 			Font:           "StandardParseFontName",
 			VerticalLayout: "fitted",
 		})
@@ -107,18 +97,8 @@ func TestStandardFont(t *testing.T) {
 // ---------------------------------------------------------------------------
 
 func TestGraffitiFont(t *testing.T) {
-	t.Run("renders text with graffiti font and fitted horizontal layout (async)", func(t *testing.T) {
+	t.Run("renders text with graffiti font and fitted horizontal layout", func(t *testing.T) {
 		actual, err := figlet.Text("ABC.123", &figlet.FigletOptions{
-			Font:             "Graffiti",
-			HorizontalLayout: "fitted",
-		})
-
-		require.NoError(t, err)
-		assert.Equal(t, readExpected(t, "graffiti"), actual)
-	})
-
-	t.Run("renders text with graffiti font and fitted horizontal layout (sync)", func(t *testing.T) {
-		actual, err := figlet.TextSync("ABC.123", &figlet.FigletOptions{
 			Font:             "Graffiti",
 			HorizontalLayout: "fitted",
 		})
@@ -203,7 +183,7 @@ func TestMiscFonts(t *testing.T) {
 	})
 
 	t.Run("renders with Dancing Font right-to-left", func(t *testing.T) {
-		actual, err := figlet.TextSync("pizzapie", &figlet.FigletOptions{
+		actual, err := figlet.Text("pizzapie", &figlet.FigletOptions{
 			Font:             "Dancing Font",
 			HorizontalLayout: "full",
 			PrintDirection:   figlet.RightToLeft,
@@ -214,7 +194,7 @@ func TestMiscFonts(t *testing.T) {
 	})
 
 	t.Run("follows vertical smush rule 2 (Slant font)", func(t *testing.T) {
-		actual, err := figlet.TextSync("Terminal\nChess", &figlet.FigletOptions{
+		actual, err := figlet.Text("Terminal\nChess", &figlet.FigletOptions{
 			Font: "Slant",
 		})
 
@@ -252,7 +232,7 @@ func TestFonts(t *testing.T) {
 		for _, font := range fonts {
 			font := font
 			t.Run(font, func(t *testing.T) {
-				actual, err := figlet.TextSync("abc ABC ...", &figlet.FigletOptions{
+				actual, err := figlet.Text("abc ABC ...", &figlet.FigletOptions{
 					Font: figlet.FontName(font),
 				})
 
@@ -268,14 +248,8 @@ func TestFonts(t *testing.T) {
 // ---------------------------------------------------------------------------
 
 func TestErrorHandling(t *testing.T) {
-	t.Run("returns error containing 'Font' when font not found (async)", func(t *testing.T) {
+	t.Run("returns error containing 'Font' when font not found", func(t *testing.T) {
 		_, err := figlet.Text("test", &figlet.FigletOptions{Font: "NonExistentFont"})
-		require.Error(t, err)
-		assert.Contains(t, err.Error(), "Font")
-	})
-
-	t.Run("returns error containing 'Font' when font not found (sync)", func(t *testing.T) {
-		_, err := figlet.TextSync("test", &figlet.FigletOptions{Font: "NonExistentFont"})
 		require.Error(t, err)
 		assert.Contains(t, err.Error(), "Font")
 	})

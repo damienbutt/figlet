@@ -30,7 +30,7 @@ import (
 )
 
 func main() {
-    text, err := figlet.Text("Hello, World!")
+    text, err := figlet.Text("Hello World!")
     if err != nil {
         panic(err)
     }
@@ -42,11 +42,11 @@ func main() {
 This will print out:
 
 ```txt
-  _   _      _ _        __        __         _     _ _ _
- | | | | ___| | | ___   \ \      / /__  _ __| | __| | | |
- | |_| |/ _ \ | |/ _ \   \ \ /\ / / _ \| '__| |/ _` | | |
- |  _  |  __/ | | (_) |   \ V  V / (_) | |  | | (_| |_|_|
- |_| |_|\___|_|_|\___/     \_/\_/ \___/|_|  |_|\__,_(_|_)
+  _   _      _ _        __        __         _     _ _
+ | | | | ___| | | ___   \ \      / /__  _ __| | __| | |
+ | |_| |/ _ \ | |/ _ \   \ \ /\ / / _ \| '__| |/ _` | |
+ |  _  |  __/ | | (_) |   \ V  V / (_) | |  | | (_| |_|
+ |_| |_|\___|_|_|\___/     \_/\_/ \___/|_|  |_|\__,_(_)
 ```
 
 ## Getting Started - Command Line
@@ -60,7 +60,7 @@ go install github.com/damienbutt/figlet/cmd/figlet@latest
 And then you should be able run from the command line. Example:
 
 ```sh
-figlet "Hello, World!"
+figlet "Hello World!"
 ```
 
 ## LICENSE

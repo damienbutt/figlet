@@ -27,11 +27,17 @@ func Defaults(opts *FigletDefaults) FigletDefaults {
 	return figDefaults
 }
 
-// TextSync generates ASCII art from the given text using the provided options.
-func TextSync(text string, opts *FigletOptions) (string, error) {
+// Text generates ASCII art from the given text using the provided options.
+// opts is optional; omit it or pass nothing to use the defaults.
+func Text(text string, opts ...*FigletOptions) (string, error) {
+	var o *FigletOptions
+	if len(opts) > 0 {
+		o = opts[0]
+	}
+
 	fontName := figDefaults.Font
-	if opts != nil && opts.Font != "" {
-		fontName = FontName(opts.Font)
+	if o != nil && o.Font != "" {
+		fontName = FontName(o.Font)
 	}
 
 	meta, err := LoadFont(string(fontName))
@@ -39,13 +45,8 @@ func TextSync(text string, opts *FigletOptions) (string, error) {
 		return "", err
 	}
 
-	internalOpts := reworkFontOpts(*meta, opts)
+	internalOpts := reworkFontOpts(*meta, o)
 	return generateText(string(fontName), internalOpts, text)
-}
-
-// Text is an alias for TextSync.
-func Text(text string, opts *FigletOptions) (string, error) {
-	return TextSync(text, opts)
 }
 
 // PreloadFonts loads multiple fonts into the cache.

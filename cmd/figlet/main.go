@@ -96,7 +96,14 @@ func main() {
 			horizontalLayout := cmd.String("horizontalLayout")
 			verticalLayout := cmd.String("verticalLayout")
 
-			result, err := figletTextSync(text, font, horizontalLayout, verticalLayout, width)
+			opts := &figlet.FigletOptions{
+				Font:             figlet.FontName(font),
+				HorizontalLayout: figlet.KerningMethods(horizontalLayout),
+				VerticalLayout:   figlet.KerningMethods(verticalLayout),
+				Width:            width,
+			}
+
+			result, err := figlet.Text(text, opts)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Font '%s' not found. Use --list to see available fonts.\n", font)
 				os.Exit(1)
