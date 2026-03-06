@@ -38,8 +38,36 @@ type FontMetadata struct {
 }
 
 type (
-	FontName       string
-	KerningMethods string
+	FontName          string
+	KerningMethods    string
+	FittingProperties string
+)
+
+// KerningMethods constants mirror the TypeScript KerningMethods union type.
+const (
+	KerningDefault            KerningMethods = "default"
+	KerningFull               KerningMethods = "full"
+	KerningFitted             KerningMethods = "fitted"
+	KerningControlledSmushing KerningMethods = "controlled smushing"
+	KerningUniversalSmushing  KerningMethods = "universal smushing"
+)
+
+// FittingProperties constants name the individual fields of FittingRules,
+// matching the TypeScript FittingProperties union type.
+const (
+	FitHLayout FittingProperties = "hLayout"
+	FitHRule1  FittingProperties = "hRule1"
+	FitHRule2  FittingProperties = "hRule2"
+	FitHRule3  FittingProperties = "hRule3"
+	FitHRule4  FittingProperties = "hRule4"
+	FitHRule5  FittingProperties = "hRule5"
+	FitHRule6  FittingProperties = "hRule6"
+	FitVLayout FittingProperties = "vLayout"
+	FitVRule1  FittingProperties = "vRule1"
+	FitVRule2  FittingProperties = "vRule2"
+	FitVRule3  FittingProperties = "vRule3"
+	FitVRule4  FittingProperties = "vRule4"
+	FitVRule5  FittingProperties = "vRule5"
 )
 
 type FigletOptions struct {

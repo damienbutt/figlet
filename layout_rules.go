@@ -14,24 +14,24 @@ const (
 func getSmushingRules(oldLayout int, fullLayout *int) FittingRules {
 	codes := []struct {
 		code  int
-		field string
+		field FittingProperties
 		val   any
 	}{
-		{16384, "vLayout", lSmushing},
-		{8192, "vLayout", lFitting},
-		{4096, "vRule5", true},
-		{2048, "vRule4", true},
-		{1024, "vRule3", true},
-		{512, "vRule2", true},
-		{256, "vRule1", true},
-		{128, "hLayout", lSmushing},
-		{64, "hLayout", lFitting},
-		{32, "hRule6", true},
-		{16, "hRule5", true},
-		{8, "hRule4", true},
-		{4, "hRule3", true},
-		{2, "hRule2", true},
-		{1, "hRule1", true},
+		{16384, FitVLayout, lSmushing},
+		{8192, FitVLayout, lFitting},
+		{4096, FitVRule5, true},
+		{2048, FitVRule4, true},
+		{1024, FitVRule3, true},
+		{512, FitVRule2, true},
+		{256, FitVRule1, true},
+		{128, FitHLayout, lSmushing},
+		{64, FitHLayout, lFitting},
+		{32, FitHRule6, true},
+		{16, FitHRule5, true},
+		{8, FitHRule4, true},
+		{4, FitHRule3, true},
+		{2, FitHRule2, true},
+		{1, FitHRule1, true},
 	}
 
 	var (
@@ -53,37 +53,37 @@ func getSmushingRules(oldLayout int, fullLayout *int) FittingRules {
 			val -= c.code
 
 			switch c.field {
-			case "hLayout":
+			case FitHLayout:
 				if !hLayoutSet {
 					hLayout = c.val.(int)
 					hLayoutSet = true
 				}
-			case "vLayout":
+			case FitVLayout:
 				if !vLayoutSet {
 					vLayout = c.val.(int)
 					vLayoutSet = true
 				}
-			case "hRule1":
+			case FitHRule1:
 				hRule1 = true
-			case "hRule2":
+			case FitHRule2:
 				hRule2 = true
-			case "hRule3":
+			case FitHRule3:
 				hRule3 = true
-			case "hRule4":
+			case FitHRule4:
 				hRule4 = true
-			case "hRule5":
+			case FitHRule5:
 				hRule5 = true
-			case "hRule6":
+			case FitHRule6:
 				hRule6 = true
-			case "vRule1":
+			case FitVRule1:
 				vRule1 = true
-			case "vRule2":
+			case FitVRule2:
 				vRule2 = true
-			case "vRule3":
+			case FitVRule3:
 				vRule3 = true
-			case "vRule4":
+			case FitVRule4:
 				vRule4 = true
-			case "vRule5":
+			case FitVRule5:
 				vRule5 = true
 			}
 		}
@@ -146,7 +146,7 @@ func getHorizontalFittingRules(layout KerningMethods, opts FontMetadata) (Fittin
 	fr := opts.FittingRules
 
 	switch layout {
-	case "default":
+	case KerningDefault:
 		return FittingRules{
 			HLayout: fr.HLayout,
 			HRule1:  fr.HRule1,
@@ -156,17 +156,17 @@ func getHorizontalFittingRules(layout KerningMethods, opts FontMetadata) (Fittin
 			HRule5:  fr.HRule5,
 			HRule6:  fr.HRule6,
 		}, true
-	case "full":
+	case KerningFull:
 		return FittingRules{HLayout: lFullWidth}, true
-	case "fitted":
+	case KerningFitted:
 		return FittingRules{HLayout: lFitting}, true
-	case "controlled smushing":
+	case KerningControlledSmushing:
 		return FittingRules{
 			HLayout: lControlledSmushing,
 			HRule1:  true, HRule2: true, HRule3: true,
 			HRule4: true, HRule5: true, HRule6: true,
 		}, true
-	case "universal smushing":
+	case KerningUniversalSmushing:
 		return FittingRules{HLayout: lSmushing}, true
 	default:
 		return FittingRules{}, false
@@ -179,7 +179,7 @@ func getVerticalFittingRules(layout KerningMethods, opts FontMetadata) (FittingR
 	fr := opts.FittingRules
 
 	switch layout {
-	case "default":
+	case KerningDefault:
 		return FittingRules{
 			VLayout: fr.VLayout,
 			VRule1:  fr.VRule1,
@@ -188,16 +188,16 @@ func getVerticalFittingRules(layout KerningMethods, opts FontMetadata) (FittingR
 			VRule4:  fr.VRule4,
 			VRule5:  fr.VRule5,
 		}, true
-	case "full":
+	case KerningFull:
 		return FittingRules{VLayout: lFullWidth}, true
-	case "fitted":
+	case KerningFitted:
 		return FittingRules{VLayout: lFitting}, true
-	case "controlled smushing":
+	case KerningControlledSmushing:
 		return FittingRules{
 			VLayout: lControlledSmushing,
 			VRule1:  true, VRule2: true, VRule3: true, VRule4: true, VRule5: true,
 		}, true
-	case "universal smushing":
+	case KerningUniversalSmushing:
 		return FittingRules{VLayout: lSmushing}, true
 	default:
 		return FittingRules{}, false
@@ -207,47 +207,47 @@ func getVerticalFittingRules(layout KerningMethods, opts FontMetadata) (FittingR
 // reworkFontOpts merges user-supplied FigletOptions on top of font metadata
 // to produce the InternalOptions used throughout rendering.
 func reworkFontOpts(meta FontMetadata, opts *FigletOptions) InternalOptions {
-	myOpts := InternalOptions{FontMetadata: meta}
+	result := InternalOptions{FontMetadata: meta}
 
 	if opts == nil {
-		myOpts.Width = -1
-		return myOpts
+		result.Width = -1
+		return result
 	}
 
-	myOpts.ShowHardBlanks = opts.ShowHardBlanks
-	myOpts.Width = opts.Width
-	if myOpts.Width == 0 {
-		myOpts.Width = -1
+	result.ShowHardBlanks = opts.ShowHardBlanks
+	result.Width = opts.Width
+	if result.Width == 0 {
+		result.Width = -1
 	}
 
-	myOpts.WhitespaceBreak = opts.WhitespaceBreak
+	result.WhitespaceBreak = opts.WhitespaceBreak
 
 	if opts.HorizontalLayout != "" {
 		if params, ok := getHorizontalFittingRules(opts.HorizontalLayout, meta); ok {
-			myOpts.FittingRules.HLayout = params.HLayout
-			myOpts.FittingRules.HRule1 = params.HRule1
-			myOpts.FittingRules.HRule2 = params.HRule2
-			myOpts.FittingRules.HRule3 = params.HRule3
-			myOpts.FittingRules.HRule4 = params.HRule4
-			myOpts.FittingRules.HRule5 = params.HRule5
-			myOpts.FittingRules.HRule6 = params.HRule6
+			result.FittingRules.HLayout = params.HLayout
+			result.FittingRules.HRule1 = params.HRule1
+			result.FittingRules.HRule2 = params.HRule2
+			result.FittingRules.HRule3 = params.HRule3
+			result.FittingRules.HRule4 = params.HRule4
+			result.FittingRules.HRule5 = params.HRule5
+			result.FittingRules.HRule6 = params.HRule6
 		}
 	}
 
 	if opts.VerticalLayout != "" {
 		if params, ok := getVerticalFittingRules(opts.VerticalLayout, meta); ok {
-			myOpts.FittingRules.VLayout = params.VLayout
-			myOpts.FittingRules.VRule1 = params.VRule1
-			myOpts.FittingRules.VRule2 = params.VRule2
-			myOpts.FittingRules.VRule3 = params.VRule3
-			myOpts.FittingRules.VRule4 = params.VRule4
-			myOpts.FittingRules.VRule5 = params.VRule5
+			result.FittingRules.VLayout = params.VLayout
+			result.FittingRules.VRule1 = params.VRule1
+			result.FittingRules.VRule2 = params.VRule2
+			result.FittingRules.VRule3 = params.VRule3
+			result.FittingRules.VRule4 = params.VRule4
+			result.FittingRules.VRule5 = params.VRule5
 		}
 	}
 
 	if opts.PrintDirection != DefaultDirection {
-		myOpts.PrintDirection = opts.PrintDirection
+		result.PrintDirection = opts.PrintDirection
 	}
 
-	return myOpts
+	return result
 }
