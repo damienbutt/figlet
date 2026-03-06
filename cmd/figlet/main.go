@@ -7,6 +7,8 @@ import (
 	"os"
 
 	"github.com/urfave/cli/v3"
+
+	"github.com/damienbutt/figlet/internal/version"
 )
 
 func main() {
@@ -14,7 +16,7 @@ func main() {
 		Name:      "figlet",
 		Usage:     "Go FIGdriver. Generates ASCII art from text using FIGlet fonts.",
 		ArgsUsage: "[text]",
-		Version:   "1.0.0",
+		Version:   version.Version,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:    "font",

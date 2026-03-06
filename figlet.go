@@ -15,10 +15,12 @@ func Defaults(opts *FigletDefaults) FigletDefaults {
 		if opts.Font != "" {
 			figDefaults.Font = opts.Font
 		}
+
 		if opts.FontPath != "" {
 			figDefaults.FontPath = opts.FontPath
 		}
 	}
+
 	return figDefaults
 }
 

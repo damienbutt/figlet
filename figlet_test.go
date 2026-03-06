@@ -5,9 +5,10 @@ import (
 	"strings"
 	"testing"
 
-	figlet "github.com/damienbutt/figlet"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	figlet "github.com/damienbutt/figlet"
 )
 
 // readExpected reads a golden file from testdata/expected/ and strips any trailing newline.
@@ -24,11 +25,12 @@ func readExpected(t *testing.T, filename string) string {
 
 func getMaxWidth(input string) int {
 	max := 0
-	for _, line := range strings.Split(input, "\n") {
+	for line := range strings.SplitSeq(input, "\n") {
 		if len(line) > max {
 			max = len(line)
 		}
 	}
+
 	return max
 }
 
@@ -72,6 +74,7 @@ func TestStandardFont(t *testing.T) {
 			Font:           "Standard",
 			VerticalLayout: "fitted",
 		})
+
 		require.NoError(t, err)
 		assert.Equal(t, readExpected(t, "standard"), actual)
 	})
@@ -81,6 +84,7 @@ func TestStandardFont(t *testing.T) {
 			Font:           "Standard",
 			VerticalLayout: "fitted",
 		})
+
 		require.NoError(t, err)
 		assert.Equal(t, readExpected(t, "standard"), actual)
 	})
@@ -96,6 +100,7 @@ func TestStandardFont(t *testing.T) {
 			Font:           "StandardParseFontName",
 			VerticalLayout: "fitted",
 		})
+
 		require.NoError(t, err)
 		assert.Equal(t, readExpected(t, "standard"), actual)
 	})
@@ -111,6 +116,7 @@ func TestGraffitiFont(t *testing.T) {
 			Font:             "Graffiti",
 			HorizontalLayout: "fitted",
 		})
+
 		require.NoError(t, err)
 		assert.Equal(t, readExpected(t, "graffiti"), actual)
 	})
@@ -120,6 +126,7 @@ func TestGraffitiFont(t *testing.T) {
 			Font:             "Graffiti",
 			HorizontalLayout: "fitted",
 		})
+
 		require.NoError(t, err)
 		assert.Equal(t, readExpected(t, "graffiti"), actual)
 	})
@@ -196,6 +203,7 @@ func TestMiscFonts(t *testing.T) {
 			Font:             "Dancing Font",
 			HorizontalLayout: "full",
 		})
+
 		require.NoError(t, err)
 		assert.Equal(t, readExpected(t, "dancingFont"), actual)
 	})
@@ -206,6 +214,7 @@ func TestMiscFonts(t *testing.T) {
 			HorizontalLayout: "full",
 			PrintDirection:   figlet.RightToLeft,
 		})
+
 		require.NoError(t, err)
 		assert.Equal(t, readExpected(t, "dancingFontReverse"), actual)
 	})
@@ -214,6 +223,7 @@ func TestMiscFonts(t *testing.T) {
 		actual, err := figlet.TextSync("Terminal\nChess", &figlet.FigletOptions{
 			Font: "Slant",
 		})
+
 		require.NoError(t, err)
 		assert.Equal(t, readExpected(t, "verticalSmushRule2"), actual)
 	})
@@ -222,6 +232,7 @@ func TestMiscFonts(t *testing.T) {
 		actual, err := figlet.Text("This\n\nis\n\n\na test", &figlet.FigletOptions{
 			Font: "miniwi",
 		})
+
 		require.NoError(t, err)
 		assert.Equal(t, readExpected(t, "miniwi_multiline"), actual)
 	})
@@ -250,6 +261,7 @@ func TestFonts(t *testing.T) {
 				actual, err := figlet.TextSync("abc ABC ...", &figlet.FigletOptions{
 					Font: figlet.FontName(font),
 				})
+
 				require.NoError(t, err)
 				assert.Greater(t, getMaxWidth(actual), 0)
 			})

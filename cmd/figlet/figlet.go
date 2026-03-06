@@ -38,5 +38,6 @@ func figletTextSync(text, font, horizontalLayout, verticalLayout string, width i
 		VerticalLayout:   figlet.KerningMethods(verticalLayout),
 		Width:            width,
 	}
+
 	return figlet.TextSync(text, opts)
 }
