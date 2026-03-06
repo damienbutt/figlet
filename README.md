@@ -39,6 +39,30 @@ func main() {
 }
 ```
 
+This will print out:
+
+```txt
+  _   _      _ _        __        __         _     _ _ _
+ | | | | ___| | | ___   \ \      / /__  _ __| | __| | | |
+ | |_| |/ _ \ | |/ _ \   \ \ /\ / / _ \| '__| |/ _` | | |
+ |  _  |  __/ | | (_) |   \ V  V / (_) | |  | | (_| |_|_|
+ |_| |_|\___|_|_|\___/     \_/\_/ \___/|_|  |_|\__,_(_|_)
+```
+
+## Getting Started - Command Line
+
+To use figlet.go on the command line, install globally:
+
+```sh
+go install github.com/damienbutt/figlet/cmd/figlet@latest
+```
+
+And then you should be able run from the command line. Example:
+
+```sh
+figlet "Hello, World!"
+```
+
 ## LICENSE
 
 [MIT](./LICENSE)
