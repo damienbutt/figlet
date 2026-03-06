@@ -47,7 +47,7 @@ func LoadFont(name string) (*FontMetadata, error) {
 	fsPath := filepath.Join(figDefaults.FontPath, actualName+".flf")
 	data, err = os.ReadFile(fsPath)
 	if err != nil {
-		return nil, fmt.Errorf("Font not found: %q (also checked embedded fonts)", name)
+		return nil, fmt.Errorf("font not found: %q (also checked embedded fonts)", name)
 	}
 
 	return ParseFont(actualName, string(data))

@@ -271,7 +271,7 @@ func generateText(fontName string, opts InternalOptions, txt string) (string, er
 	mu.RUnlock()
 
 	if !ok {
-		return "", fmt.Errorf("Font not loaded: %q", fontName)
+		return "", fmt.Errorf("font not loaded: %q", fontName)
 	}
 
 	inputLines := strings.Split(txt, "\n")

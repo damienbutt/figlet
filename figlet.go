@@ -63,7 +63,7 @@ func PreloadFonts(names []FontName) error {
 func Fonts() ([]string, error) {
 	entries, err := fs.ReadDir(FontFS, "fonts")
 	if err != nil {
-		return nil, fmt.Errorf("Font list unavailable: %w", err)
+		return nil, fmt.Errorf("font list unavailable: %w", err)
 	}
 
 	names := make([]string, 0, len(entries))

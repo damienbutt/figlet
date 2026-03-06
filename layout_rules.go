@@ -12,12 +12,6 @@ const (
 // getSmushingRules decodes the bit-packed oldLayout / fullLayout integers
 // from a FIGlet font header into a FittingRules value.
 func getSmushingRules(oldLayout int, fullLayout *int) FittingRules {
-	type entry struct {
-		code  int
-		field string
-		val   int // 0 = false, 1 = true, layout value otherwise
-	}
-
 	codes := []struct {
 		code  int
 		field string
@@ -92,18 +86,17 @@ func getSmushingRules(oldLayout int, fullLayout *int) FittingRules {
 			case "vRule5":
 				vRule5 = true
 			}
-		} else if c.field != "vLayout" && c.field != "hLayout" {
-			// rule fields default to false — already the zero value
 		}
 	}
 
 	// Resolve hLayout if not set by bit decoding
 	if !hLayoutSet {
-		if oldLayout == 0 {
+		switch oldLayout {
+		case 0:
 			hLayout = lFitting
-		} else if oldLayout == -1 {
+		case -1:
 			hLayout = lFullWidth
-		} else {
+		default:
 			if hRule1 || hRule2 || hRule3 || hRule4 || hRule5 || hRule6 {
 				hLayout = lControlledSmushing
 			} else {

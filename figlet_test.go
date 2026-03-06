@@ -16,11 +16,7 @@ func readExpected(t *testing.T, filename string) string {
 	t.Helper()
 	data, err := os.ReadFile("testdata/expected/" + filename)
 	require.NoError(t, err)
-	result := string(data)
-	if strings.HasSuffix(result, "\n") {
-		result = result[:len(result)-1]
-	}
-	return result
+	return strings.TrimSuffix(string(data), "\n")
 }
 
 func getMaxWidth(input string) int {
@@ -183,9 +179,7 @@ func TestTextWrapping(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual, err := figlet.Text("", &tt.opts)
-			// Use Text with the correct text arg
-			actual, err = figlet.Text(tt.text, &tt.opts)
+			actual, err := figlet.Text(tt.text, &tt.opts)
 			require.NoError(t, err)
 			assert.LessOrEqual(t, getMaxWidth(actual), tt.maxWidth)
 			assert.Equal(t, readExpected(t, tt.expected), actual)

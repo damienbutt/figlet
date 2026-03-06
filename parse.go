@@ -52,7 +52,7 @@ func ParseFont(name string, data string) (*FontMetadata, error) {
 
 	lines := strings.Split(data, "\n")
 	if len(lines) == 0 {
-		return nil, fmt.Errorf("Font file is empty")
+		return nil, fmt.Errorf("font file is empty")
 	}
 
 	// --- Parse header ---
@@ -61,11 +61,11 @@ func ParseFont(name string, data string) (*FontMetadata, error) {
 
 	headerData := strings.Fields(headerLine)
 	if len(headerData) < 6 {
-		return nil, fmt.Errorf("Font file header is too short")
+		return nil, fmt.Errorf("font file header is too short")
 	}
 
 	if len(headerData[0]) < 6 {
-		return nil, fmt.Errorf("Font file has invalid header")
+		return nil, fmt.Errorf("font file has invalid header")
 	}
 
 	hardBlank := string(headerData[0][5])
@@ -76,39 +76,39 @@ func ParseFont(name string, data string) (*FontMetadata, error) {
 
 	height, err := parseInt(headerData[1])
 	if err != nil {
-		return nil, fmt.Errorf("Font file: invalid height: %w", err)
+		return nil, fmt.Errorf("font file: invalid height: %w", err)
 	}
 
 	baseline, err := parseInt(headerData[2])
 	if err != nil {
-		return nil, fmt.Errorf("Font file: invalid baseline: %w", err)
+		return nil, fmt.Errorf("font file: invalid baseline: %w", err)
 	}
 
 	maxLength, err := parseInt(headerData[3])
 	if err != nil {
-		return nil, fmt.Errorf("Font file: invalid maxLength: %w", err)
+		return nil, fmt.Errorf("font file: invalid maxLength: %w", err)
 	}
 
 	oldLayout, err := parseInt(headerData[4])
 	if err != nil {
-		return nil, fmt.Errorf("Font file: invalid oldLayout: %w", err)
+		return nil, fmt.Errorf("font file: invalid oldLayout: %w", err)
 	}
 
 	numCommentLines, err := parseInt(headerData[5])
 	if err != nil {
-		return nil, fmt.Errorf("Font file: invalid numCommentLines: %w", err)
+		return nil, fmt.Errorf("font file: invalid numCommentLines: %w", err)
 	}
 
 	// Validate required fields
 	if utf8.RuneCountInString(hardBlank) != 1 {
-		return nil, fmt.Errorf("Font file: invalid hardBlank character")
+		return nil, fmt.Errorf("font file: invalid hardBlank character")
 	}
 
 	printDirection := PrintDirection(0) // default: left-to-right
 	if len(headerData) >= 7 {
 		pd, err := parseInt(headerData[6])
 		if err != nil {
-			return nil, fmt.Errorf("Font file: invalid printDirection: %w", err)
+			return nil, fmt.Errorf("font file: invalid printDirection: %w", err)
 		}
 
 		printDirection = PrintDirection(pd)
@@ -120,7 +120,7 @@ func ParseFont(name string, data string) (*FontMetadata, error) {
 	if len(headerData) >= 8 {
 		fl, err := parseInt(headerData[7])
 		if err != nil {
-			return nil, fmt.Errorf("Font file: invalid fullLayout: %w", err)
+			return nil, fmt.Errorf("font file: invalid fullLayout: %w", err)
 		}
 
 		fullLayout = &fl
@@ -130,7 +130,7 @@ func ParseFont(name string, data string) (*FontMetadata, error) {
 	if len(headerData) >= 9 {
 		ct, err := parseInt(headerData[8])
 		if err != nil {
-			return nil, fmt.Errorf("Font file: invalid codeTagCount: %w", err)
+			return nil, fmt.Errorf("font file: invalid codeTagCount: %w", err)
 		}
 
 		codeTagCount = &ct
@@ -162,7 +162,7 @@ func ParseFont(name string, data string) (*FontMetadata, error) {
 	needed := numCommentLines + height*len(charNums)
 	if len(lines) < needed {
 		return nil, fmt.Errorf(
-			"Font file is missing data. Line length: %d. Comment lines: %d. Height: %d. Num chars: %d",
+			"font file is missing data: line length %d, comment lines %d, height %d, num chars %d",
 			len(lines), numCommentLines, height, len(charNums),
 		)
 	}
@@ -213,7 +213,7 @@ func ParseFont(name string, data string) (*FontMetadata, error) {
 			}
 
 			if err != nil {
-				return nil, fmt.Errorf("Font file: error parsing data. Invalid data: %s", raw)
+				return nil, fmt.Errorf("font file: error parsing data: invalid data: %s", raw)
 			}
 
 			if strings.HasPrefix(raw, "-") {
@@ -224,7 +224,7 @@ func ParseFont(name string, data string) (*FontMetadata, error) {
 		case regexp.MustCompile(`^-?0[0-7]+$`).MatchString(raw):
 			n, err := strconv.ParseInt(strings.TrimPrefix(raw, "-"), 8, 64)
 			if err != nil {
-				return nil, fmt.Errorf("Font file: error parsing data. Invalid data: %s", raw)
+				return nil, fmt.Errorf("font file: error parsing data: invalid data: %s", raw)
 			}
 
 			if strings.HasPrefix(raw, "-") {
@@ -235,23 +235,23 @@ func ParseFont(name string, data string) (*FontMetadata, error) {
 		case regexp.MustCompile(`^-?[0-9]+$`).MatchString(raw):
 			parsedNum, err = parseInt(raw)
 			if err != nil {
-				return nil, fmt.Errorf("Font file: error parsing data. Invalid data: %s", raw)
+				return nil, fmt.Errorf("font file: error parsing data: invalid data: %s", raw)
 			}
 		default:
-			return nil, fmt.Errorf("Font file: error parsing data. Invalid data: %s", raw)
+			return nil, fmt.Errorf("font file: error parsing data: invalid data: %s", raw)
 		}
 
 		// Per FIGlet spec: code must be in range [-2147483648, 2147483647], excluding -1.
 		if parsedNum == -1 {
-			return nil, fmt.Errorf("Font file: error parsing data. The char code -1 is not permitted.")
+			return nil, fmt.Errorf("font file: error parsing data: char code -1 is not permitted")
 		}
 
 		if parsedNum < -2147483648 || parsedNum > 2147483647 {
 			if parsedNum < -2147483648 {
-				return nil, fmt.Errorf("Font file: error parsing data. The char code cannot be less than -2147483648.")
+				return nil, fmt.Errorf("font file: error parsing data: char code cannot be less than -2147483648")
 			}
 
-			return nil, fmt.Errorf("Font file: error parsing data. The char code cannot be greater than 2147483647.")
+			return nil, fmt.Errorf("font file: error parsing data: char code cannot be greater than 2147483647")
 		}
 
 		if len(lines) < height {
