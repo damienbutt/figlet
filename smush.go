@@ -2,6 +2,13 @@ package figlet
 
 import "strings"
 
+// Vertical smush result constants returned by canVerticalSmush.
+const (
+	smushValid   = "valid"
+	smushEnd     = "end"
+	smushInvalid = "invalid"
+)
+
 // ---------------------------------------------------------------------------
 // Horizontal smushing rules (hRule1–6)
 // Each function returns (result string, ok bool).  ok == false means the
@@ -50,10 +57,7 @@ func hRule3Smush(ch1, ch2 string) (string, bool) {
 		}
 
 		if p1 != p2 && diff != 1 {
-			start := p1
-			if p2 > p1 {
-				start = p2
-			}
+			start := max(p2, p1)
 
 			return string(rule3Classes[start]), true
 		}
@@ -179,33 +183,30 @@ func uniSmush(ch1, ch2, hardBlank string) string {
 
 // canVerticalSmush reports whether two lines of FIGlet art can be
 // vertically smushed given the current options.
-// Returns "valid", "end", or "invalid".
+// Returns smushValid, smushEnd, or smushInvalid.
 func canVerticalSmush(txt1, txt2 string, opts InternalOptions) string {
-	if opts.FittingRules.VLayout == lFullWidth {
-		return "invalid"
+	if opts.FittingRules.VLayout == layoutFullWidth {
+		return smushInvalid
 	}
 
-	minLen := len(txt1)
-	if len(txt2) < minLen {
-		minLen = len(txt2)
-	}
+	minLen := min(len(txt2), len(txt1))
 
 	if minLen == 0 {
-		return "invalid"
+		return smushInvalid
 	}
 
 	endSmush := false
 
-	for ii := 0; ii < minLen; ii++ {
+	for ii := range minLen {
 		ch1 := string(txt1[ii])
 		ch2 := string(txt2[ii])
 
 		if ch1 != " " && ch2 != " " {
 			switch opts.FittingRules.VLayout {
-			case lFitting:
-				return "invalid"
-			case lSmushing:
-				return "end"
+			case layoutFitting:
+				return smushInvalid
+			case layoutSmushing:
+				return smushEnd
 			default: // lControlledSmushing
 				if _, ok := vRule5Smush(ch1, ch2); ok {
 					// super-smushing: continue but don't yet mark endSmush
@@ -231,17 +232,17 @@ func canVerticalSmush(txt1, txt2 string, opts InternalOptions) string {
 
 				endSmush = true
 				if !validSmush {
-					return "invalid"
+					return smushInvalid
 				}
 			}
 		}
 	}
 
 	if endSmush {
-		return "end"
+		return smushEnd
 	}
 
-	return "valid"
+	return smushValid
 }
 
 // getVerticalSmushDist returns the number of rows by which two blocks of
@@ -253,21 +254,10 @@ func getVerticalSmushDist(lines1, lines2 []string, opts InternalOptions) int {
 	result := ""
 
 	for curDist <= maxDist {
-		start1 := len1 - curDist
-		if start1 < 0 {
-			start1 = 0
-		}
+		start1 := max(len1-curDist, 0)
 
 		subLines1 := lines1[start1:len1]
-		end2 := curDist
-
-		if end2 > maxDist {
-			end2 = maxDist
-		}
-
-		if end2 > len(lines2) {
-			end2 = len(lines2)
-		}
+		end2 := min(min(curDist, maxDist), len(lines2))
 
 		subLines2 := lines2[:end2]
 
@@ -277,28 +267,28 @@ func getVerticalSmushDist(lines1, lines2 []string, opts InternalOptions) int {
 		for ii := range slen {
 			ret := canVerticalSmush(subLines1[ii], subLines2[ii], opts)
 
-			if ret == "end" {
+			if ret == smushEnd {
 				result = ret
-			} else if ret == "invalid" {
+			} else if ret == smushInvalid {
 				result = ret
 				break
 			} else {
 				if result == "" {
-					result = "valid"
+					result = smushValid
 				}
 			}
 		}
 
-		if result == "invalid" {
+		if result == smushInvalid {
 			curDist--
 			break
 		}
 
-		if result == "end" {
+		if result == smushEnd {
 			break
 		}
 
-		if result == "valid" {
+		if result == smushValid {
 			curDist++
 		}
 	}
@@ -312,21 +302,18 @@ func getVerticalSmushDist(lines1, lines2 []string, opts InternalOptions) int {
 
 // verticallySmushLines merges two lines of FIGlet art row by row.
 func verticallySmushLines(line1, line2 string, opts InternalOptions) string {
-	minLen := len(line1)
-	if len(line2) < minLen {
-		minLen = len(line2)
-	}
+	minLen := min(len(line2), len(line1))
 
 	var sb strings.Builder
 	fr := opts.FittingRules
 
-	for ii := 0; ii < minLen; ii++ {
+	for ii := range minLen {
 		ch1 := string(line1[ii])
 		ch2 := string(line2[ii])
 
 		if ch1 != " " && ch2 != " " {
 			switch fr.VLayout {
-			case lFitting, lSmushing:
+			case layoutFitting, layoutSmushing:
 				sb.WriteString(uniSmush(ch1, ch2, opts.HardBlank))
 			default: // lControlledSmushing
 				smushed := ""
@@ -372,24 +359,15 @@ func verticalSmush(lines1, lines2 []string, overlap int, opts InternalOptions) [
 
 	// piece1: rows of lines1 before the overlap zone
 	piece1Start := 0
-	piece1End := len1 - overlap
-	if piece1End < 0 {
-		piece1End = 0
-	}
+	piece1End := max(len1-overlap, 0)
 
 	piece1 := lines1[piece1Start:piece1End]
 
 	// piece2: merged overlap rows
-	over1Start := len1 - overlap
-	if over1Start < 0 {
-		over1Start = 0
-	}
+	over1Start := max(len1-overlap, 0)
 
 	piece2_1 := lines1[over1Start:len1]
-	over2End := overlap
-	if over2End > len2 {
-		over2End = len2
-	}
+	over2End := min(overlap, len2)
 
 	piece2_2 := lines2[:over2End]
 
@@ -403,10 +381,7 @@ func verticalSmush(lines1, lines2 []string, overlap int, opts InternalOptions) [
 	}
 
 	// piece3: remaining rows of lines2 after the overlap zone
-	piece3Start := overlap
-	if piece3Start > len2 {
-		piece3Start = len2
-	}
+	piece3Start := min(overlap, len2)
 
 	piece3 := lines2[piece3Start:]
 
@@ -421,7 +396,7 @@ func verticalSmush(lines1, lines2 []string, overlap int, opts InternalOptions) [
 // horizontally overlap.
 func getHorizontalSmushLength(txt1, txt2 string, opts InternalOptions) int {
 	fr := opts.FittingRules
-	if fr.HLayout == lFullWidth {
+	if fr.HLayout == layoutFullWidth {
 		return 0
 	}
 
@@ -439,23 +414,20 @@ distCal:
 	for curDist <= maxDist {
 		seg1Start := len1 - curDist
 		seg1 := txt1[seg1Start : seg1Start+curDist]
-		end2 := curDist
-		if end2 > len2 {
-			end2 = len2
-		}
+		end2 := min(curDist, len2)
 
 		seg2 := txt2[:end2]
 
-		for ii := 0; ii < end2; ii++ {
+		for ii := range end2 {
 			ch1 := string(seg1[ii])
 			ch2 := string(seg2[ii])
 
 			if ch1 != " " && ch2 != " " {
 				switch fr.HLayout {
-				case lFitting:
+				case layoutFitting:
 					curDist--
 					break distCal
-				case lSmushing:
+				case layoutSmushing:
 					if ch1 == opts.HardBlank || ch2 == opts.HardBlank {
 						curDist-- // universal smushing does not smush hardblanks
 					}
@@ -514,7 +486,7 @@ distCal:
 func horizontalSmush(block1, block2 []string, overlap int, opts InternalOptions) []string {
 	fr := opts.FittingRules
 	height := opts.Height
-	out := make([]string, height)
+	result := make([]string, height)
 
 	for ii := range height {
 		txt1 := block1[ii]
@@ -522,24 +494,15 @@ func horizontalSmush(block1, block2 []string, overlap int, opts InternalOptions)
 		len1 := len(txt1)
 		len2 := len(txt2)
 
-		overlapStart := len1 - overlap
-		if overlapStart < 0 {
-			overlapStart = 0
-		}
+		overlapStart := max(len1-overlap, 0)
 
 		piece1 := txt1[:overlapStart]
 
 		// Overlap segment from block1 and block2
-		seg1Start := len1 - overlap
-		if seg1Start < 0 {
-			seg1Start = 0
-		}
+		seg1Start := max(len1-overlap, 0)
 
 		seg1 := txt1[seg1Start:]
-		end2 := overlap
-		if end2 > len2 {
-			end2 = len2
-		}
+		end2 := min(overlap, len2)
 
 		seg2 := txt2[:end2]
 
@@ -556,7 +519,7 @@ func horizontalSmush(block1, block2 []string, overlap int, opts InternalOptions)
 			}
 
 			if ch1 != " " && ch2 != " " {
-				if fr.HLayout == lFitting || fr.HLayout == lSmushing {
+				if fr.HLayout == layoutFitting || fr.HLayout == layoutSmushing {
 					piece2.WriteString(uniSmush(ch1, ch2, opts.HardBlank))
 				} else {
 					// Controlled smushing
@@ -602,8 +565,8 @@ func horizontalSmush(block1, block2 []string, overlap int, opts InternalOptions)
 			piece3 = txt2[overlap:]
 		}
 
-		out[ii] = piece1 + piece2.String() + piece3
+		result[ii] = piece1 + piece2.String() + piece3
 	}
 
-	return out
+	return result
 }

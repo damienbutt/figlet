@@ -1,12 +1,11 @@
 package figlet
 
-// Layout modes — mirror the internal/layout constants as plain ints to
-// avoid cross-package casting everywhere inside this package.
+// Layout modes used throughout the smushing and fitting logic.
 const (
-	lFullWidth          = 0
-	lFitting            = 1
-	lSmushing           = 2
-	lControlledSmushing = 3
+	layoutFullWidth int = iota
+	layoutFitting
+	layoutSmushing
+	layoutControlledSmushing
 )
 
 // getSmushingRules decodes the bit-packed oldLayout / fullLayout integers
@@ -17,15 +16,15 @@ func getSmushingRules(oldLayout int, fullLayout *int) FittingRules {
 		field FittingProperties
 		val   any
 	}{
-		{16384, FitVLayout, lSmushing},
-		{8192, FitVLayout, lFitting},
+		{16384, FitVLayout, layoutSmushing},
+		{8192, FitVLayout, layoutFitting},
 		{4096, FitVRule5, true},
 		{2048, FitVRule4, true},
 		{1024, FitVRule3, true},
 		{512, FitVRule2, true},
 		{256, FitVRule1, true},
-		{128, FitHLayout, lSmushing},
-		{64, FitHLayout, lFitting},
+		{128, FitHLayout, layoutSmushing},
+		{64, FitHLayout, layoutFitting},
 		{32, FitHRule6, true},
 		{16, FitHRule5, true},
 		{8, FitHRule4, true},
@@ -93,32 +92,32 @@ func getSmushingRules(oldLayout int, fullLayout *int) FittingRules {
 	if !hLayoutSet {
 		switch oldLayout {
 		case 0:
-			hLayout = lFitting
+			hLayout = layoutFitting
 		case -1:
-			hLayout = lFullWidth
+			hLayout = layoutFullWidth
 		default:
 			if hRule1 || hRule2 || hRule3 || hRule4 || hRule5 || hRule6 {
-				hLayout = lControlledSmushing
+				hLayout = layoutControlledSmushing
 			} else {
-				hLayout = lSmushing
+				hLayout = layoutSmushing
 			}
 		}
-	} else if hLayout == lSmushing {
+	} else if hLayout == layoutSmushing {
 		if hRule1 || hRule2 || hRule3 || hRule4 || hRule5 || hRule6 {
-			hLayout = lControlledSmushing
+			hLayout = layoutControlledSmushing
 		}
 	}
 
 	// Resolve vLayout if not set by bit decoding
 	if !vLayoutSet {
 		if vRule1 || vRule2 || vRule3 || vRule4 || vRule5 {
-			vLayout = lControlledSmushing
+			vLayout = layoutControlledSmushing
 		} else {
-			vLayout = lFullWidth
+			vLayout = layoutFullWidth
 		}
-	} else if vLayout == lSmushing {
+	} else if vLayout == layoutSmushing {
 		if vRule1 || vRule2 || vRule3 || vRule4 || vRule5 {
-			vLayout = lControlledSmushing
+			vLayout = layoutControlledSmushing
 		}
 	}
 
@@ -157,17 +156,17 @@ func getHorizontalFittingRules(layout KerningMethods, opts FontMetadata) (Fittin
 			HRule6:  fr.HRule6,
 		}, true
 	case KerningFull:
-		return FittingRules{HLayout: lFullWidth}, true
+		return FittingRules{HLayout: layoutFullWidth}, true
 	case KerningFitted:
-		return FittingRules{HLayout: lFitting}, true
+		return FittingRules{HLayout: layoutFitting}, true
 	case KerningControlledSmushing:
 		return FittingRules{
-			HLayout: lControlledSmushing,
+			HLayout: layoutControlledSmushing,
 			HRule1:  true, HRule2: true, HRule3: true,
 			HRule4: true, HRule5: true, HRule6: true,
 		}, true
 	case KerningUniversalSmushing:
-		return FittingRules{HLayout: lSmushing}, true
+		return FittingRules{HLayout: layoutSmushing}, true
 	default:
 		return FittingRules{}, false
 	}
@@ -189,16 +188,16 @@ func getVerticalFittingRules(layout KerningMethods, opts FontMetadata) (FittingR
 			VRule5:  fr.VRule5,
 		}, true
 	case KerningFull:
-		return FittingRules{VLayout: lFullWidth}, true
+		return FittingRules{VLayout: layoutFullWidth}, true
 	case KerningFitted:
-		return FittingRules{VLayout: lFitting}, true
+		return FittingRules{VLayout: layoutFitting}, true
 	case KerningControlledSmushing:
 		return FittingRules{
-			VLayout: lControlledSmushing,
+			VLayout: layoutControlledSmushing,
 			VRule1:  true, VRule2: true, VRule3: true, VRule4: true, VRule5: true,
 		}, true
 	case KerningUniversalSmushing:
-		return FittingRules{VLayout: lSmushing}, true
+		return FittingRules{VLayout: layoutSmushing}, true
 	default:
 		return FittingRules{}, false
 	}

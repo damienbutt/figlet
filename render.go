@@ -128,7 +128,7 @@ func generateFigTextLines(txt string, font *FigletFont, opts InternalOptions) []
 		}
 
 		overlap := 0
-		if fr.HLayout != lFullWidth {
+		if fr.HLayout != layoutFullWidth {
 			overlap = 10000 // intentionally large; will be minimised
 
 			for row := range height {

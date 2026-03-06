@@ -25,8 +25,8 @@ func TestGetSmushingRules(t *testing.T) {
 			oldLayout:  -1,
 			fullLayout: nil,
 			want: FittingRules{
-				HLayout: lFullWidth,
-				VLayout: lFullWidth,
+				HLayout: layoutFullWidth,
+				VLayout: layoutFullWidth,
 			},
 		},
 		{
@@ -35,8 +35,8 @@ func TestGetSmushingRules(t *testing.T) {
 			oldLayout:  0,
 			fullLayout: nil,
 			want: FittingRules{
-				HLayout: lFitting,
-				VLayout: lFullWidth,
+				HLayout: layoutFitting,
+				VLayout: layoutFullWidth,
 			},
 		},
 		{
@@ -46,12 +46,12 @@ func TestGetSmushingRules(t *testing.T) {
 			oldLayout:  15,
 			fullLayout: nil,
 			want: FittingRules{
-				HLayout: lControlledSmushing,
+				HLayout: layoutControlledSmushing,
 				HRule1:  true,
 				HRule2:  true,
 				HRule3:  true,
 				HRule4:  true,
-				VLayout: lFullWidth,
+				VLayout: layoutFullWidth,
 			},
 		},
 		{
@@ -62,14 +62,14 @@ func TestGetSmushingRules(t *testing.T) {
 			oldLayout:  15,
 			fullLayout: intPtr(24463),
 			want: FittingRules{
-				HLayout: lControlledSmushing,
+				HLayout: layoutControlledSmushing,
 				HRule1:  true,
 				HRule2:  true,
 				HRule3:  true,
 				HRule4:  true,
 				HRule5:  false,
 				HRule6:  false,
-				VLayout: lControlledSmushing,
+				VLayout: layoutControlledSmushing,
 				VRule1:  true,
 				VRule2:  true,
 				VRule3:  true,
@@ -86,8 +86,8 @@ func TestGetSmushingRules(t *testing.T) {
 			oldLayout:  15,
 			fullLayout: intPtr(0),
 			want: FittingRules{
-				HLayout: lSmushing,
-				VLayout: lFullWidth,
+				HLayout: layoutSmushing,
+				VLayout: layoutFullWidth,
 			},
 		},
 	}
@@ -107,7 +107,7 @@ func TestGetSmushingRules(t *testing.T) {
 func TestGetHorizontalFittingRules(t *testing.T) {
 	meta := FontMetadata{
 		FittingRules: FittingRules{
-			HLayout: lControlledSmushing,
+			HLayout: layoutControlledSmushing,
 			HRule1:  true,
 			HRule2:  true,
 			HRule3:  true,
@@ -128,7 +128,7 @@ func TestGetHorizontalFittingRules(t *testing.T) {
 			layout: KerningDefault,
 			wantOK: true,
 			wantFR: FittingRules{
-				HLayout: lControlledSmushing,
+				HLayout: layoutControlledSmushing,
 				HRule1:  true, HRule2: true, HRule3: true, HRule4: true,
 			},
 		},
@@ -136,20 +136,20 @@ func TestGetHorizontalFittingRules(t *testing.T) {
 			name:   "full — overrides to fullWidth, clears rules",
 			layout: KerningFull,
 			wantOK: true,
-			wantFR: FittingRules{HLayout: lFullWidth},
+			wantFR: FittingRules{HLayout: layoutFullWidth},
 		},
 		{
 			name:   "fitted — overrides to fitting",
 			layout: KerningFitted,
 			wantOK: true,
-			wantFR: FittingRules{HLayout: lFitting},
+			wantFR: FittingRules{HLayout: layoutFitting},
 		},
 		{
 			name:   "controlled smushing — all h rules enabled",
 			layout: KerningControlledSmushing,
 			wantOK: true,
 			wantFR: FittingRules{
-				HLayout: lControlledSmushing,
+				HLayout: layoutControlledSmushing,
 				HRule1:  true, HRule2: true, HRule3: true,
 				HRule4: true, HRule5: true, HRule6: true,
 			},
@@ -158,7 +158,7 @@ func TestGetHorizontalFittingRules(t *testing.T) {
 			name:   "universal smushing",
 			layout: KerningUniversalSmushing,
 			wantOK: true,
-			wantFR: FittingRules{HLayout: lSmushing},
+			wantFR: FittingRules{HLayout: layoutSmushing},
 		},
 		{
 			name:   "unrecognised value → false",
@@ -190,7 +190,7 @@ func TestGetHorizontalFittingRules(t *testing.T) {
 func TestGetVerticalFittingRules(t *testing.T) {
 	meta := FontMetadata{
 		FittingRules: FittingRules{
-			VLayout: lControlledSmushing,
+			VLayout: layoutControlledSmushing,
 			VRule1:  true,
 			VRule2:  true,
 			VRule3:  true,
@@ -210,7 +210,7 @@ func TestGetVerticalFittingRules(t *testing.T) {
 			layout: KerningDefault,
 			wantOK: true,
 			wantFR: FittingRules{
-				VLayout: lControlledSmushing,
+				VLayout: layoutControlledSmushing,
 				VRule1:  true, VRule2: true, VRule3: true, VRule4: true, VRule5: true,
 			},
 		},
@@ -218,20 +218,20 @@ func TestGetVerticalFittingRules(t *testing.T) {
 			name:   "full — overrides to fullWidth",
 			layout: KerningFull,
 			wantOK: true,
-			wantFR: FittingRules{VLayout: lFullWidth},
+			wantFR: FittingRules{VLayout: layoutFullWidth},
 		},
 		{
 			name:   "fitted",
 			layout: KerningFitted,
 			wantOK: true,
-			wantFR: FittingRules{VLayout: lFitting},
+			wantFR: FittingRules{VLayout: layoutFitting},
 		},
 		{
 			name:   "controlled smushing — all v rules enabled",
 			layout: KerningControlledSmushing,
 			wantOK: true,
 			wantFR: FittingRules{
-				VLayout: lControlledSmushing,
+				VLayout: layoutControlledSmushing,
 				VRule1:  true, VRule2: true, VRule3: true, VRule4: true, VRule5: true,
 			},
 		},
@@ -239,7 +239,7 @@ func TestGetVerticalFittingRules(t *testing.T) {
 			name:   "universal smushing",
 			layout: KerningUniversalSmushing,
 			wantOK: true,
-			wantFR: FittingRules{VLayout: lSmushing},
+			wantFR: FittingRules{VLayout: layoutSmushing},
 		},
 		{
 			name:   "unrecognised value → false",
@@ -268,9 +268,9 @@ func TestReworkFontOpts(t *testing.T) {
 		Height:         6,
 		PrintDirection: LeftToRight,
 		FittingRules: FittingRules{
-			HLayout: lControlledSmushing,
+			HLayout: layoutControlledSmushing,
 			HRule1:  true, HRule2: true, HRule3: true, HRule4: true,
-			VLayout: lControlledSmushing,
+			VLayout: layoutControlledSmushing,
 			VRule1:  true, VRule2: true, VRule3: true, VRule4: true, VRule5: true,
 		},
 	}
@@ -304,19 +304,19 @@ func TestReworkFontOpts(t *testing.T) {
 
 	t.Run("HorizontalLayout full overrides h rules to fullWidth", func(t *testing.T) {
 		out := reworkFontOpts(baseMeta, &FigletOptions{HorizontalLayout: KerningFull})
-		assert.Equal(t, lFullWidth, out.FittingRules.HLayout)
+		assert.Equal(t, layoutFullWidth, out.FittingRules.HLayout)
 		assert.False(t, out.FittingRules.HRule1)
 	})
 
 	t.Run("HorizontalLayout default restores font h rules", func(t *testing.T) {
 		out := reworkFontOpts(baseMeta, &FigletOptions{HorizontalLayout: KerningDefault})
-		assert.Equal(t, lControlledSmushing, out.FittingRules.HLayout)
+		assert.Equal(t, layoutControlledSmushing, out.FittingRules.HLayout)
 		assert.True(t, out.FittingRules.HRule1)
 	})
 
 	t.Run("VerticalLayout full overrides v rules to fullWidth", func(t *testing.T) {
 		out := reworkFontOpts(baseMeta, &FigletOptions{VerticalLayout: KerningFull})
-		assert.Equal(t, lFullWidth, out.FittingRules.VLayout)
+		assert.Equal(t, layoutFullWidth, out.FittingRules.VLayout)
 		assert.False(t, out.FittingRules.VRule1)
 	})
 
