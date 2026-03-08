@@ -5,6 +5,8 @@ project_name: figlet
 before:
   hooks:
     - go mod tidy
+    - ./scripts/generate-changelog.sh {{ .Tag }}
+    - ./scripts/generate-release-notes.sh {{ .Tag }}
 
 builds:
   - id: figlet
