@@ -6,8 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func intPtr(v int) *int { return &v }
-
 // ---------------------------------------------------------------------------
 // getSmushingRules
 // ---------------------------------------------------------------------------
@@ -60,7 +58,7 @@ func TestGetSmushingRules(t *testing.T) {
 			// Both layout values upgrade from lSmushing → lControlledSmushing because rules are present
 			name:       "Standard font (oldLayout=15, fullLayout=24463)",
 			oldLayout:  15,
-			fullLayout: intPtr(24463),
+			fullLayout: new(24463),
 			want: FittingRules{
 				HLayout: layoutControlledSmushing,
 				HRule1:  true,
@@ -84,7 +82,7 @@ func TestGetSmushingRules(t *testing.T) {
 			// Contrast with fullLayout=nil,oldLayout=15 which fires rule bits → lControlledSmushing.
 			name:       "fullLayout=0 overrides oldLayout rule bits",
 			oldLayout:  15,
-			fullLayout: intPtr(0),
+			fullLayout: new(0),
 			want: FittingRules{
 				HLayout: layoutSmushing,
 				VLayout: layoutFullWidth,

@@ -30,8 +30,6 @@ func getMaxWidth(input string) int {
 	return max
 }
 
-func intPtr(v int) *int { return &v }
-
 // standardMeta reflects the known metadata of the Standard.flf font.
 var standardMeta = figlet.FontMetadata{
 	HardBlank:       "$",
@@ -41,8 +39,8 @@ var standardMeta = figlet.FontMetadata{
 	OldLayout:       15,
 	NumCommentLines: 13,
 	PrintDirection:  figlet.LeftToRight,
-	FullLayout:      intPtr(24463),
-	CodeTagCount:    intPtr(229),
+	FullLayout:      new(24463),
+	CodeTagCount:    new(229),
 	FittingRules: figlet.FittingRules{
 		VLayout: 3,
 		VRule5:  true,
