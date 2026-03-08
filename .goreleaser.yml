@@ -115,14 +115,14 @@ scoops:
     license: MIT
 
 aurs:
-  - name: figlet-bin
+  - name: figlet-go-bin
     homepage: https://github.com/damienbutt/figlet
     description: Go FIGdriver. Generates ASCII art from text using FIGlet fonts.
     maintainers:
       - Damien Butt <22627489+damienbutt@users.noreply.github.com>
     license: MIT
     private_key: "{{ .Env.AUR_SSH_PRIVATE_KEY }}"
-    git_url: ssh://aur@aur.archlinux.org/figlet-bin.git
+    git_url: ssh://aur@aur.archlinux.org/figlet-go-bin.git
     provides:
       - figlet
     conflicts:
@@ -139,14 +139,14 @@ aurs:
     skip_upload: false
 
 aur_sources:
-  - name: figlet
+  - name: figlet-go
     homepage: https://github.com/damienbutt/figlet
     description: Go FIGdriver. Generates ASCII art from text using FIGlet fonts.
     maintainers:
       - Damien Butt <22627489+damienbutt@users.noreply.github.com>
     license: MIT
     private_key: "{{ .Env.AUR_SSH_PRIVATE_KEY }}"
-    git_url: ssh://aur@aur.archlinux.org/figlet.git
+    git_url: ssh://aur@aur.archlinux.org/figlet-go.git
     provides:
       - figlet
     conflicts:
