@@ -336,13 +336,56 @@ func main() {
 
 ## Getting Started - Command Line
 
-To use figlet.go on the command line, install globally:
+### Installation
+
+#### Homebrew (macOS)
+
+```sh
+brew install damienbutt/tap/figlet
+```
+
+#### Scoop (Windows)
+
+```sh
+scoop bucket add damienbutt https://github.com/damienbutt/scoop-bucket
+scoop install figlet
+```
+
+#### Arch Linux (AUR)
+
+Binary package:
+
+```sh
+paru -S figlet-bin
+```
+
+Or build from source:
+
+```sh
+paru -S figlet
+```
+
+#### Go Install
 
 ```sh
 go install github.com/damienbutt/figlet/cmd/figlet@latest
 ```
 
-And then you should be able run from the command line. Example:
+#### Pre-built Binaries
+
+Download pre-built binaries for your platform from the [releases page](https://github.com/damienbutt/figlet/releases/latest).
+
+#### Build from Source
+
+```sh
+git clone https://github.com/damienbutt/figlet.git
+cd figlet
+make install
+```
+
+### Usage
+
+Once installed, you can run figlet from the command line:
 
 ```sh
 figlet "Hello World!"
