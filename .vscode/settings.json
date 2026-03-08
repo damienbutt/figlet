@@ -16,5 +16,8 @@
         }
     },
     "go.lintTool": "golangci-lint",
-    "go.lintOnSave": "workspace"
+    "go.lintOnSave": "workspace",
+    "[shellscript]": {
+        "editor.defaultFormatter": "lumirelle.shell-format-rev"
+    }
 }
